@@ -22,7 +22,11 @@ const App: React.FC = () => {
       const generatedImages = await generateWallpapers(prompt);
       setImages(generatedImages);
     } catch (e) {
-      setError('이미지 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError('알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      }
       console.error(e);
     } finally {
       setIsLoading(false);
