@@ -1,5 +1,5 @@
 {
-  "name": "mobile-wallpaper-generator",
+  "name": "cellular-wallpaper-generator",
   "description": "원하는 분위기를 설명하여 독특한 휴대폰 배경화면을 생성하는 AI 기반 웹 애플리케이션입니다. 9:16 비율의 이미지 4개를 생성하고, 전체 화면 보기, 다운로드, 리믹스 기능을 제공합니다.",
   "requestFramePermissions": []
 }
