@@ -1,14 +1,11 @@
+
 import { GoogleGenAI } from "@google/genai";
 
-export async function generateWallpapers(prompt: string): Promise<string[]> {
-  // Safely access the API key to prevent crashes in environments where 'process' is not defined.
-  const API_KEY = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
-
-  if (!API_KEY) {
-    throw new Error("API_KEY 환경 변수가 설정되지 않았습니다. 배포 환경(예: Vercel)의 설정에서 API 키를 추가해주세요.");
+export async function generateWallpapers(prompt: string, apiKey: string): Promise<string[]> {
+  if (!apiKey) {
+    throw new Error("Google AI Studio API 키를 입력해주세요.");
   }
-
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     // Enhance prompt for better wallpaper generation
@@ -39,7 +36,7 @@ export async function generateWallpapers(prompt: string): Promise<string[]> {
     if (error instanceof Error) {
         // Provide a more specific error message if the key is likely invalid.
         if (error.message.includes('API key not valid')) {
-            throw new Error('API 키가 유효하지 않습니다. Vercel 환경 변수를 다시 확인해주세요.');
+            throw new Error('API 키가 유효하지 않습니다. 올바른 키를 입력했는지 확인해주세요.');
         }
         throw new Error(`이미지 생성 실패: ${error.message}`);
     }

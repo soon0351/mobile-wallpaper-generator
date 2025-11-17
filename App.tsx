@@ -5,6 +5,7 @@ import ImageModal from './components/ImageModal';
 import Loader from './components/Loader';
 
 const App: React.FC = () => {
+  const [apiKey, setApiKey] = useState<string>('');
   const [prompt, setPrompt] = useState<string>('');
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -12,14 +13,14 @@ const App: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleGenerate = useCallback(async () => {
-    if (!prompt.trim() || isLoading) return;
+    if (!prompt.trim() || !apiKey.trim() || isLoading) return;
 
     setIsLoading(true);
     setError(null);
     setImages([]);
 
     try {
-      const generatedImages = await generateWallpapers(prompt);
+      const generatedImages = await generateWallpapers(prompt, apiKey);
       setImages(generatedImages);
     } catch (e) {
       if (e instanceof Error) {
@@ -31,7 +32,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [prompt, isLoading]);
+  }, [prompt, apiKey, isLoading]);
 
   const handleImageClick = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -61,6 +62,18 @@ const App: React.FC = () => {
       <main className="w-full max-w-lg flex-grow">
         <div className="sticky top-4 bg-gray-900/80 backdrop-blur-sm z-10 p-2 -m-2 rounded-lg">
           <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="api-key" className="text-sm font-medium text-gray-400">Google AI Studio API 키</label>
+              <input
+                id="api-key"
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="API 키를 여기에 붙여넣으세요"
+                className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-300"
+                disabled={isLoading}
+              />
+            </div>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
@@ -70,7 +83,7 @@ const App: React.FC = () => {
             />
             <button
               onClick={handleGenerate}
-              disabled={isLoading || !prompt.trim()}
+              disabled={isLoading || !prompt.trim() || !apiKey.trim()}
               className="w-full py-3 px-4 bg-purple-600 rounded-lg font-bold text-white flex items-center justify-center gap-2 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-300"
             >
               {isLoading ? (
